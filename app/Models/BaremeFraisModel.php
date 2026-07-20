@@ -1,42 +1,50 @@
 <?php
 namespace App\Models;
-
 use CodeIgniter\Model;
-
 class BaremeFraisModel extends Model
 {
+
     protected $table = 'baremes_frais';
     protected $primaryKey = 'id';
     protected $allowedFields = ['type_operation_id', 'montant_min', 'montant_max', 'frais', 'frais_type'];
-    protected $returnType = 'array';
 
-    /**
-     * Vérifie si une tranche [montantMin, montantMax] chevauche une tranche
-     * déjà existante pour le même type d'opération.
-     * montantMax peut être null (= pas de plafond, tranche "et plus").
-     * $excludeId sert à s'exclure soi-même lors d'une modification.
-     */
-    public function chevauche($typeOperationId, $montantMin, $montantMax, $excludeId = null): bool
+    public function chevauche(int $typeOperationId, float $montantMin, ?float $montantMax, ?int $idExclu = null): bool
     {
-        $builder = $this->where('type_operation_id', $typeOperationId);
-        if ($excludeId !== null) {
-            $builder->where('id !=', $excludeId);
+        $builder = $this->where('type_operation_id', $typeOperationId)
+                        ->groupStart()
+                            ->where('montant_max', null)
+                            ->orWhere('montant_max >=', $montantMin)
+                        ->groupEnd();
+
+        if ($montantMax !== null) {
+            $builder->where('montant_min <=', $montantMax);
         }
-        $baremes = $builder->findAll();
 
-        foreach ($baremes as $b) {
-            $existingMin = (float) $b['montant_min'];
-            $existingMax = $b['montant_max'] !== null ? (float) $b['montant_max'] : null;
-
-            // Deux intervalles [a,b] et [c,d] (b ou d pouvant être "infini") se chevauchent
-            // si a <= d (ou d infini) ET c <= b (ou b infini).
-            $debutOk = ($existingMax === null) || ($montantMin <= $existingMax);
-            $finOk   = ($montantMax === null) || ($existingMin <= $montantMax);
-
-            if ($debutOk && $finOk) {
-                return true;
-            }
+        if ($idExclu !== null) {
+            $builder->where('id !=', $idExclu);
         }
-        return false;
+
+        return $builder->first() !== null;
+    }
+
+    public function calculerFrais(int $typeOperationId, float $montant): float
+    {
+        $bareme = $this->where('type_operation_id', $typeOperationId)
+                        ->where('montant_min <=', $montant)
+                        ->groupStart()
+                            ->where('montant_max >=', $montant)
+                            ->orWhere('montant_max', null)
+                        ->groupEnd()
+                        ->first();
+
+        if (! $bareme) {
+            return 0.0;
+        }
+
+        if ($bareme['frais_type'] === 'pourcentage') {
+            return round($montant * ((float) $bareme['frais'] / 100), 2);
+        }
+
+        return (float) $bareme['frais'];
     }
 }

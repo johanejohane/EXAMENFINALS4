@@ -1,0 +1,4 @@
+<?= $this->include('operateur/partials/header', ['title' => 'Comptes clients']) ?>
+<div class="mb-4"><h1 class="h3 mb-1">Situation des comptes clients</h1><p class="text-muted mb-0">Soldes des comptes mobiles enregistres.</p></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead class="table-light"><tr><th>Numero</th><th>Nom</th><th class="text-end">Solde</th></tr></thead><tbody><?php foreach ($clients as $client) : ?><tr><td><?= esc($client['numero']) ?></td><td><?= esc($client['nom'] ?? '-') ?></td><td class="text-end"><?= number_format((float) $client['solde'], 0, ',', ' ') ?> Ar</td></tr><?php endforeach; ?><?php if (empty($clients)) : ?><tr><td colspan="3" class="text-center text-muted py-4">Aucun compte client.</td></tr><?php endif; ?></tbody></table></div></div>
+<?= $this->include('operateur/partials/footer') ?>

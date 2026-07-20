@@ -1,17 +1,3 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="/prefixes" method="post">
-        <label for="prefixe">Préfixe:</label>
-        <input type="text" name="prefixe" id="prefixe">
-        <label for="libelle">Libellé:</label>
-        <input type="text" name="libelle" id="libelle">
-        <button type="submit">Ajouter</button>
-    </form>
-</body>
-</html>
+<?= $this->include('operateur/partials/header', ['title' => 'Nouveau prefixe']) ?>
+<div class="row justify-content-center"><div class="col-md-7 col-lg-5"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h4 mb-4">Nouveau prefixe</h1><form action="<?= site_url('prefixes') ?>" method="post"><?= csrf_field() ?><div class="mb-3"><label for="prefixe" class="form-label">Prefixe</label><input type="text" name="prefixe" id="prefixe" maxlength="3" class="form-control" required></div><div class="mb-3"><label for="libelle" class="form-label">Libelle</label><input type="text" name="libelle" id="libelle" class="form-control"></div><div class="mb-4"><label for="operateur_id" class="form-label">Operateur</label><select name="operateur_id" id="operateur_id" class="form-select" required><?php foreach ($operateurs as $operateur) : ?><option value="<?= $operateur['id'] ?>"><?= esc($operateur['nom']) ?></option><?php endforeach; ?></select></div><div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Ajouter</button><a href="<?= site_url('prefixes') ?>" class="btn btn-outline-secondary">Annuler</a></div></form></div></div></div></div>
+<?= $this->include('operateur/partials/footer') ?>

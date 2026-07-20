@@ -1,7 +1,3 @@
-<form action="/prefixes/<?= $prefixe['id'] ?>" method="post">
-    <label for="prefixe">Préfixe:</label>
-    <input type="text" name="prefixe" id="prefixe" value="<?= $prefixe['prefixe'] ?>">
-    <label for="libelle">Libellé:</label>
-    <input type="text" name="libelle" id="libelle" value="<?= $prefixe['libelle'] ?>">
-    <button type="submit">Modifier</button>
-</form>
+<?= $this->include('operateur/partials/header', ['title' => 'Modifier prefixe']) ?>
+<div class="row justify-content-center"><div class="col-md-7 col-lg-5"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h4 mb-4">Modifier le prefixe</h1><form action="<?= site_url('prefixes/' . $prefixe['id']) ?>" method="post"><?= csrf_field() ?><div class="mb-3"><label for="prefixe" class="form-label">Prefixe</label><input type="text" name="prefixe" id="prefixe" maxlength="3" value="<?= esc($prefixe['prefixe']) ?>" class="form-control" required></div><div class="mb-3"><label for="libelle" class="form-label">Libelle</label><input type="text" name="libelle" id="libelle" value="<?= esc($prefixe['libelle']) ?>" class="form-control"></div><div class="mb-4"><label for="operateur_id" class="form-label">Operateur</label><select name="operateur_id" id="operateur_id" class="form-select" required><?php foreach ($operateurs as $operateur) : ?><option value="<?= $operateur['id'] ?>" <?= $operateur['id'] == $prefixe['operateur_id'] ? 'selected' : '' ?>><?= esc($operateur['nom']) ?></option><?php endforeach; ?></select></div><div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Enregistrer</button><a href="<?= site_url('prefixes') ?>" class="btn btn-outline-secondary">Annuler</a></div></form></div></div></div></div>
+<?= $this->include('operateur/partials/footer') ?>

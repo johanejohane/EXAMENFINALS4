@@ -1,36 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Barèmes de frais</title>
-</head>
-<body>
-    <h2>Barèmes de frais</h2>
-    <a href="/baremes/new">ajouter</a>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Type d'opération</th>
-            <th>Montant min</th>
-            <th>Montant max</th>
-            <th>Frais</th>
-            <th>Type de frais</th>
-            <th>Actions</th>
-        </tr>
-        <?php foreach ($baremes as $b) : ?>
-            <tr>
-                <td><?= $b['type_libelle'] ?></td>
-                <td><?= $b['montant_min'] ?></td>
-                <td><?= $b['montant_max'] ?? 'illimité' ?></td>
-                <td><?= $b['frais'] ?></td>
-                <td><?= $b['frais_type'] ?></td>
-                <td>
-                    <a href="/baremes/<?= $b['id'] ?>/edit">Modifier</a>
-                    <form action="/baremes/<?= $b['id'] ?>/delete" method="post" style="display:inline;">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</body>
-</html>
+<?= $this->include('operateur/partials/header', ['title' => 'Baremes frais']) ?>
+<div class="d-flex justify-content-between align-items-center mb-4"><h1 class="h3 mb-0">Baremes de frais</h1><a href="<?= site_url('baremes/new') ?>" class="btn btn-primary">Ajouter un bareme</a></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead class="table-light"><tr><th>Operation</th><th>Minimum</th><th>Maximum</th><th>Frais</th><th>Type</th><th class="text-end">Actions</th></tr></thead><tbody><?php foreach ($baremes as $bareme) : ?><tr><td><?= esc($bareme['type_libelle']) ?></td><td><?= number_format((float) $bareme['montant_min'], 2, ',', ' ') ?> Ar</td><td><?= $bareme['montant_max'] === null ? 'Illimite' : number_format((float) $bareme['montant_max'], 2, ',', ' ') . ' Ar' ?></td><td><?= number_format((float) $bareme['frais'], 2, ',', ' ') ?><?= $bareme['frais_type'] === 'pourcentage' ? ' %' : ' Ar' ?></td><td><?= esc($bareme['frais_type']) ?></td><td class="text-end"><a href="<?= site_url('baremes/' . $bareme['id'] . '/edit') ?>" class="btn btn-sm btn-outline-primary">Modifier</a><form action="<?= site_url('baremes/' . $bareme['id'] . '/delete') ?>" method="post" class="d-inline"><?= csrf_field() ?><button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button></form></td></tr><?php endforeach; ?><?php if (empty($baremes)) : ?><tr><td colspan="6" class="text-center text-muted py-4">Aucun bareme.</td></tr><?php endif; ?></tbody></table></div></div>
+<?= $this->include('operateur/partials/footer') ?>

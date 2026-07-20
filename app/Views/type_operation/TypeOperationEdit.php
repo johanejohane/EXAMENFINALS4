@@ -1,7 +1,3 @@
-<form action="/types-operation/<?= $type['id'] ?>" method="post">
-    <label for="code">Code :</label>
-    <input type="text" name="code" id="code" value="<?= $type['code'] ?>">
-    <label for="libelle">Libellé :</label>
-    <input type="text" name="libelle" id="libelle" value="<?= $type['libelle'] ?>">
-    <button type="submit">Modifier</button>
-</form>
+<?= $this->include('operateur/partials/header', ['title' => 'Modifier type operation']) ?>
+<div class="row justify-content-center"><div class="col-md-7 col-lg-5"><div class="card shadow-sm"><div class="card-body p-4"><h1 class="h4 mb-4">Modifier le type d'operation</h1><form action="<?= site_url('types-operation/' . $type['id']) ?>" method="post"><?= csrf_field() ?><div class="mb-3"><label for="code" class="form-label">Code</label><input type="text" name="code" id="code" value="<?= esc($type['code']) ?>" class="form-control" required></div><div class="mb-4"><label for="libelle" class="form-label">Libelle</label><input type="text" name="libelle" id="libelle" value="<?= esc($type['libelle']) ?>" class="form-control" required></div><div class="d-flex gap-2"><button type="submit" class="btn btn-primary">Enregistrer</button><a href="<?= site_url('types-operation') ?>" class="btn btn-outline-secondary">Annuler</a></div></form></div></div></div></div>
+<?= $this->include('operateur/partials/footer') ?>

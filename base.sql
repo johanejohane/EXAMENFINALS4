@@ -1,7 +1,22 @@
+CREATE TABLE operateurs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom VARCHAR(100) NOT NULL UNIQUE,
+    commission_transfert DECIMAL(5,2) NOT NULL DEFAULT 0
+);
+
 CREATE TABLE prefixes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     prefixe VARCHAR(3) NOT NULL UNIQUE,
-    libelle VARCHAR(100)
+    libelle VARCHAR(100),
+    operateur_id INTEGER NOT NULL,
+    FOREIGN KEY (operateur_id) REFERENCES operateurs(id)
+);
+
+CREATE TABLE comptes_operateurs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    operateur_id INTEGER NOT NULL UNIQUE,
+    solde DECIMAL(15,2) NOT NULL DEFAULT 0,
+    FOREIGN KEY (operateur_id) REFERENCES operateurs(id)
 );
 
 CREATE TABLE types_operation (
@@ -33,14 +48,50 @@ CREATE TABLE transactions (
     type_operation_id INTEGER NOT NULL,
     client_source_id INTEGER,
     client_destination_id INTEGER,
+    operateur_source_id INTEGER,
+    operateur_destination_id INTEGER,
     montant DECIMAL(15,2) NOT NULL,
     frais DECIMAL(15,2) NOT NULL,
+    commission_interoperateur DECIMAL(15,2) NOT NULL DEFAULT 0,
+    frais_retrait_inclus DECIMAL(15,2) NOT NULL DEFAULT 0,
     date_operation DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (type_operation_id) REFERENCES types_operation(id),
     FOREIGN KEY (client_source_id) REFERENCES clients(id),
-    FOREIGN KEY (client_destination_id) REFERENCES clients(id)
+    FOREIGN KEY (client_destination_id) REFERENCES clients(id),
+    FOREIGN KEY (operateur_source_id) REFERENCES operateurs(id),
+    FOREIGN KEY (operateur_destination_id) REFERENCES operateurs(id)
 );
 
 -- données de départ
-INSERT INTO prefixes (prefixe, libelle) VALUES ('033','Opérateur A'), ('037','Opérateur B');
+INSERT INTO operateurs (nom, commission_transfert) VALUES
+('Orange', 0),
+('Autre opÃ©rateur', 0);
+
+INSERT INTO prefixes (prefixe, libelle, operateur_id) VALUES
+('033','Orange', 1),
+('037','Orange', 1),
+('032','Autre opÃ©rateur', 2),
+('031','Autre opÃ©rateur', 2);
+
+INSERT INTO comptes_operateurs (operateur_id, solde) VALUES
+(1, 0),
+(2, 0);
 INSERT INTO types_operation (code, libelle) VALUES ('depot','Dépôt'), ('retrait','Retrait'), ('transfert','Transfert');
+
+-- RETRAIT (type_operation_id = 2)
+-- Sous 50 000 Ar : frais fixe de 500 Ar
+-- Au-dessus de 50 000 Ar : frais de 1% du montant
+INSERT INTO baremes_frais (type_operation_id, montant_min, montant_max, frais, frais_type)
+VALUES
+(2, 0,     50000, 500, 'fixe'),
+(2, 50001, NULL,  1,   'pourcentage');
+
+-- TRANSFERT (type_operation_id = 3)
+-- Frais fixe de 200 Ar quel que soit le montant
+INSERT INTO baremes_frais (type_operation_id, montant_min, montant_max, frais, frais_type)
+VALUES
+(3, 0, NULL, 200, 'fixe');
+
+INSERT INTO clients (numero, nom, solde) VALUES
+('0331234567', 'Test Rakoto', 100000),
+('0371234567', 'Test Rabe', 50000);
