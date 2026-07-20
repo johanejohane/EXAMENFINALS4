@@ -1,7 +1,14 @@
+CREATE TABLE operateurs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    nom VARCHAR(100) NOT NULL UNIQUE
+);
+
 CREATE TABLE prefixes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     prefixe VARCHAR(3) NOT NULL UNIQUE,
-    libelle VARCHAR(100)
+    libelle VARCHAR(100),
+    operateur_id INTEGER NOT NULL,
+    FOREIGN KEY (operateur_id) REFERENCES operateurs(id)
 );
 
 CREATE TABLE types_operation (
@@ -42,7 +49,16 @@ CREATE TABLE transactions (
 );
 
 -- données de départ
-INSERT INTO prefixes (prefixe, libelle) VALUES ('033','Airtel'), ('037','Orange'), ('032','Yas');
+INSERT INTO operateurs (nom) VALUES
+('Orange'),
+('Yas'),
+('Autre opÃ©rateur');
+
+INSERT INTO prefixes (prefixe, libelle, operateur_id) VALUES
+('033','Orange', 1),
+('037','Orange', 1),
+('032','Yas', 2),
+('031','Autre opÃ©rateur', 3);
 INSERT INTO types_operation (code, libelle) VALUES ('depot','Dépôt'), ('retrait','Retrait'), ('transfert','Transfert');
 
 -- RETRAIT (type_operation_id = 2)

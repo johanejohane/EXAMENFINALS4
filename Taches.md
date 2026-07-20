@@ -41,6 +41,14 @@
 
 
 ---003925---
+--V2--
+- prÃ©fixes des autres opÃ©rateurs
+    - crÃ©ation de la table `operateurs`
+    - ajout du champ `operateur_id` dans la table `prefixes`
+    - mise Ã  jour de `base.sql` avec les opÃ©rateurs Orange, Yas et Autre opÃ©rateur, et leurs prÃ©fixes configurables
+    - crÃ©ation du CRUD des opÃ©rateurs
+    - adaptation du CRUD des prÃ©fixes pour rattacher chaque prÃ©fixe Ã  un opÃ©rateur
+
 - bd
     - configuration de la base (SQLite embarqué)
     - structure de la partie opérateur (prefixes, types_operation, baremes_frais)

@@ -42,6 +42,13 @@ $routes->group('client', function ($routes) {
     });
 });
 // CRUD Préfixes - tout en POST (pas de PUT/DELETE, non spoofés nativement en CI4)
+$routes->get('operateurs', 'OperateurController::index');
+$routes->get('operateurs/new', 'OperateurController::new');
+$routes->post('operateurs', 'OperateurController::create');
+$routes->get('operateurs/(:num)/edit', 'OperateurController::edit/$1');
+$routes->post('operateurs/(:num)', 'OperateurController::update/$1');
+$routes->post('operateurs/(:num)/delete', 'OperateurController::delete/$1');
+
 $routes->get('prefixes', 'PrefixeController::index');
 $routes->get('prefixes/new', 'PrefixeController::new');
 $routes->post('prefixes', 'PrefixeController::create');
