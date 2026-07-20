@@ -16,6 +16,7 @@
 <main class="container mb-5">
     <h1 class="h3 mb-4">Espace opérateur</h1>
     <div class="row g-3">
+        <div class="col-md-6 col-lg-4"><a class="card text-decoration-none h-100 shadow-sm" href="<?= site_url('reglements-operateurs') ?>"><div class="card-body"><h2 class="h5 text-dark">Règlements opérateurs</h2><p class="text-muted mb-0">Consulter les montants à envoyer aux opérateurs.</p></div></a></div>
         <div class="col-md-6 col-lg-4"><a class="card text-decoration-none h-100 shadow-sm" href="<?= site_url('operateurs') ?>"><div class="card-body"><h2 class="h5 text-dark">Opérateurs</h2><p class="text-muted mb-0">Configurer les opérateurs et leurs préfixes.</p></div></a></div>
         <div class="col-md-6 col-lg-4"><a class="card text-decoration-none h-100 shadow-sm" href="<?= site_url('prefixes') ?>"><div class="card-body"><h2 class="h5 text-dark">Préfixes</h2><p class="text-muted mb-0">Configurer les préfixes valables.</p></div></a></div>
         <div class="col-md-6 col-lg-4"><a class="card text-decoration-none h-100 shadow-sm" href="<?= site_url('types-operation') ?>"><div class="card-body"><h2 class="h5 text-dark">Types d'opération</h2><p class="text-muted mb-0">Gérer dépôt, retrait et transfert.</p></div></a></div>

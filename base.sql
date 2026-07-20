@@ -1,6 +1,7 @@
 CREATE TABLE operateurs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    nom VARCHAR(100) NOT NULL UNIQUE
+    nom VARCHAR(100) NOT NULL UNIQUE,
+    commission_transfert DECIMAL(5,2) NOT NULL DEFAULT 0
 );
 
 CREATE TABLE prefixes (
@@ -8,6 +9,13 @@ CREATE TABLE prefixes (
     prefixe VARCHAR(3) NOT NULL UNIQUE,
     libelle VARCHAR(100),
     operateur_id INTEGER NOT NULL,
+    FOREIGN KEY (operateur_id) REFERENCES operateurs(id)
+);
+
+CREATE TABLE comptes_operateurs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    operateur_id INTEGER NOT NULL UNIQUE,
+    solde DECIMAL(15,2) NOT NULL DEFAULT 0,
     FOREIGN KEY (operateur_id) REFERENCES operateurs(id)
 );
 
@@ -40,25 +48,33 @@ CREATE TABLE transactions (
     type_operation_id INTEGER NOT NULL,
     client_source_id INTEGER,
     client_destination_id INTEGER,
+    operateur_source_id INTEGER,
+    operateur_destination_id INTEGER,
     montant DECIMAL(15,2) NOT NULL,
     frais DECIMAL(15,2) NOT NULL,
+    commission_interoperateur DECIMAL(15,2) NOT NULL DEFAULT 0,
     date_operation DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (type_operation_id) REFERENCES types_operation(id),
     FOREIGN KEY (client_source_id) REFERENCES clients(id),
-    FOREIGN KEY (client_destination_id) REFERENCES clients(id)
+    FOREIGN KEY (client_destination_id) REFERENCES clients(id),
+    FOREIGN KEY (operateur_source_id) REFERENCES operateurs(id),
+    FOREIGN KEY (operateur_destination_id) REFERENCES operateurs(id)
 );
 
 -- données de départ
-INSERT INTO operateurs (nom) VALUES
-('Orange'),
-('Yas'),
-('Autre opÃ©rateur');
+INSERT INTO operateurs (nom, commission_transfert) VALUES
+('Orange', 0),
+('Autre opÃ©rateur', 0);
 
 INSERT INTO prefixes (prefixe, libelle, operateur_id) VALUES
 ('033','Orange', 1),
 ('037','Orange', 1),
-('032','Yas', 2),
-('031','Autre opÃ©rateur', 3);
+('032','Autre opÃ©rateur', 2),
+('031','Autre opÃ©rateur', 2);
+
+INSERT INTO comptes_operateurs (operateur_id, solde) VALUES
+(1, 0),
+(2, 0);
 INSERT INTO types_operation (code, libelle) VALUES ('depot','Dépôt'), ('retrait','Retrait'), ('transfert','Transfert');
 
 -- RETRAIT (type_operation_id = 2)

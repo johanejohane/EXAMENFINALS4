@@ -7,6 +7,8 @@ use App\Models\ClientModel;
 use App\Models\TransactionModel;
 use App\Models\TypeOperationModel;
 use App\Models\BaremeFraisModel;
+use App\Models\PrefixeModel;
+use App\Models\CompteOperateurModel;
 use Config\Database;
 
 class OperationController extends BaseController
@@ -15,6 +17,8 @@ class OperationController extends BaseController
     protected $transactionModel;
     protected $typeOperationModel;
     protected $baremeFraisModel;
+    protected $prefixeModel;
+    protected $compteOperateurModel;
     
     public function __construct()
     {
@@ -22,6 +26,8 @@ class OperationController extends BaseController
         $this->transactionModel   = new TransactionModel();
         $this->typeOperationModel = new TypeOperationModel();
         $this->baremeFraisModel   = new BaremeFraisModel();
+        $this->prefixeModel       = new PrefixeModel();
+        $this->compteOperateurModel = new CompteOperateurModel();
     }
 
     public function depot()
@@ -81,6 +87,7 @@ class OperationController extends BaseController
             'client_destination_id' => null,
             'montant'                => $montant,
             'frais'                  => $frais,
+            'commission_interoperateur' => $commissionInterOperateur,
         ]);
         return redirect()->to('/client/dashboard')
             ->with('success', "Retrait de {$montant} Ar effectué. Frais: {$frais} Ar.");
@@ -109,7 +116,22 @@ class OperationController extends BaseController
             return redirect()->back()->withInput()->with('error', 'Numéro destinataire introuvable.');
         }
         $typeTransfert = $this->typeOperationModel->getByCode('transfert');
-        $frais = $this->baremeFraisModel->calculerFrais($typeTransfert['id'], $montant);
+        $operateurSource = $this->prefixeModel->getOperateurByNumero($client['numero']);
+        $operateurDestination = $this->prefixeModel->getOperateurByNumero($destinataire['numero']);
+        if (! $operateurSource || ! $operateurDestination) {
+            return redirect()->back()->withInput()->with('error', 'Opérateur introuvable.');
+        }
+        $fraisBareme = $this->baremeFraisModel->calculerFrais($typeTransfert['id'], $montant);
+        $commissionInterOperateur = 0.0;
+
+        if ($operateurSource['id'] != $operateurDestination['id']) {
+            $commissionInterOperateur = round(
+                $montant * ((float) $operateurDestination['commission_transfert'] / 100),
+                2
+            );
+        }
+
+        $frais = $fraisBareme + $commissionInterOperateur;
         $totalADebiter = $montant + $frais;
         if ((float) $client['solde'] < $totalADebiter) {
             return redirect()->back()->withInput()->with('error', 'Solde insuffisant.');
@@ -120,10 +142,17 @@ class OperationController extends BaseController
         // On débite l'expéditeur
         $this->clientModel->debiter($client['id'], $totalADebiter);
         $this->clientModel->crediter($destinataire['id'], $montant);
+        if ($operateurSource['id'] != $operateurDestination['id']) {
+            $montantReglement = $montant + $commissionInterOperateur;
+            $this->compteOperateurModel->debiter($operateurSource['id'], $montantReglement);
+            $this->compteOperateurModel->crediter($operateurDestination['id'], $montantReglement);
+        }
         $this->transactionModel->insert([
             'type_operation_id'     => $typeTransfert['id'],
             'client_source_id'      => $client['id'],
             'client_destination_id' => $destinataire['id'],
+            'operateur_source_id'   => $operateurSource['id'],
+            'operateur_destination_id' => $operateurDestination['id'],
             'montant'                => $montant,
             'frais'                  => $frais,
         ]);

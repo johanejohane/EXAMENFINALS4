@@ -3,6 +3,8 @@
 namespace App\Controllers;
 
 use App\Models\OperateurModel;
+use App\Models\CompteOperateurModel;
+use Config\Database;
 
 class OperateurController extends BaseController
 {
@@ -26,9 +28,27 @@ class OperateurController extends BaseController
 
     public function create()
     {
-        $this->model->insert([
+        $db = Database::connect();
+        $db->transStart();
+
+        $operateurId = $this->model->insert([
             'nom' => $this->request->getPost('nom'),
+            'commission_transfert' => $this->request->getPost('commission_transfert'),
         ]);
+
+        if ($operateurId !== false) {
+            (new CompteOperateurModel())->insert([
+                'operateur_id' => $operateurId,
+                'solde' => 0,
+            ]);
+        }
+
+        $db->transComplete();
+
+        if ($operateurId === false || $db->transStatus() === false) {
+            return redirect()->back()->withInput()->with('error', 'Impossible de creer l operateur.');
+        }
+
         return redirect()->to('/operateurs');
     }
 
@@ -42,6 +62,7 @@ class OperateurController extends BaseController
     {
         $this->model->update($id, [
             'nom' => $this->request->getPost('nom'),
+            'commission_transfert' => $this->request->getPost('commission_transfert'),
         ]);
         return redirect()->to('/operateurs');
     }

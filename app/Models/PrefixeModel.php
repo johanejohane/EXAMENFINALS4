@@ -15,4 +15,13 @@ class PrefixeModel extends Model
         return (bool) $this->where('prefixe', $prefixe)->first();
     }
 
+    public function getOperateurByNumero(string $numero)
+    {
+        $prefixe = substr($numero, 0, 3);
+        return $this->select('operateurs.*')
+                    ->join('operateurs', 'operateurs.id = prefixes.operateur_id')
+                    ->where('prefixes.prefixe', $prefixe)
+                    ->first();
+    }
+
 }

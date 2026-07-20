@@ -6,11 +6,12 @@
     <a href="/operateur">Retour à l'espace opérateur</a>
     <a href="/operateurs/new">ajouter</a>
     <table>
-        <tr><th>ID</th><th>Nom</th><th>Actions</th></tr>
+        <tr><th>ID</th><th>Nom</th><th>Commission transfert (%)</th><th>Actions</th></tr>
         <?php foreach ($operateurs as $operateur) : ?>
             <tr>
                 <td><?= $operateur['id'] ?></td>
                 <td><?= $operateur['nom'] ?></td>
+                <td><?= $operateur['commission_transfert'] ?></td>
                 <td>
                     <a href="/operateurs/<?= $operateur['id'] ?>/edit">Modifier</a>
                     <form action="/operateurs/<?= $operateur['id'] ?>/delete" method="post" style="display:inline;"><button type="submit">Supprimer</button></form>

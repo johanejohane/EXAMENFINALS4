@@ -45,9 +45,19 @@
 - prÃ©fixes des autres opÃ©rateurs
     - crÃ©ation de la table `operateurs`
     - ajout du champ `operateur_id` dans la table `prefixes`
-    - mise Ã  jour de `base.sql` avec les opÃ©rateurs Orange, Yas et Autre opÃ©rateur, et leurs prÃ©fixes configurables
+    - mise Ã  jour de `base.sql` avec les opÃ©rateurs Orange et Autre opÃ©rateur, et leurs prÃ©fixes configurables
     - crÃ©ation du CRUD des opÃ©rateurs
     - adaptation du CRUD des prÃ©fixes pour rattacher chaque prÃ©fixe Ã  un opÃ©rateur
+
+- commissions de transfert vers les autres opÃ©rateurs
+    - ajout du champ `commission_transfert` dans la table `operateurs`
+    - adaptation du CRUD des opÃ©rateurs pour configurer le pourcentage de commission
+
+- comptes et règlements des opÃ©rateurs
+    - création de la table `comptes_operateurs`
+    - ajout des opérateurs source et destination dans les transactions de transfert
+    - mise à jour des comptes opérateurs lors d'un transfert entre deux opérateurs différents
+    - création de la situation des montants à envoyer aux opérateurs
 
 - bd
     - configuration de la base (SQLite embarqué)

@@ -77,3 +77,5 @@ $routes->get('gains', 'GainController::index');
 
 // Situation des comptes clients
 $routes->get('comptes', 'CompteClientController::index');
+
+$routes->get('reglements-operateurs', 'CompteOperateurController::index');

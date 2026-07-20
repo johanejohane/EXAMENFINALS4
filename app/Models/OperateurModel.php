@@ -8,5 +8,5 @@ class OperateurModel extends Model
 {
     protected $table = 'operateurs';
     protected $primaryKey = 'id';
-    protected $allowedFields = ['nom'];
+    protected $allowedFields = ['nom', 'commission_transfert'];
 }
