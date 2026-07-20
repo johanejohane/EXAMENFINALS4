@@ -30,7 +30,7 @@
                 'prefixe' => $this->request->getPost('prefixe'),
                 'libelle' => $this->request->getPost('libelle'),
             ]);
-            return redirect()->to('/prefixe');
+            return redirect()->to('/prefixes');
         }
 
         public function edit($id)
@@ -45,13 +45,13 @@
                 'prefixe' => $this->request->getPost('prefixe'),
                 'libelle' => $this->request->getPost('libelle'),
             ]);
-            return redirect()->to('/prefixe');
+            return redirect()->to('/prefixes');
         }
 
         public function delete($id)
         {
             $this->model->delete($id);
-            return redirect()->to('/prefixe');
+            return redirect()->to('/prefixes');
         }
 
 

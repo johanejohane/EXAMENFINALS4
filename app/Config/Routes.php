@@ -6,6 +6,7 @@ use CodeIgniter\Router\RouteCollection;
  * @var RouteCollection $routes
  */
 $routes->get('/', 'Home::index');
+$routes->get('operateur', 'Home::operateur');
 
 // Page d'accueil : redirige directement vers le login client
 $routes->get('/index', 'Client\AuthController::login');
