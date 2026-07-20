@@ -1,66 +1,7 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Situation des gains</title>
-</head>
-<body>
-    <h2>Situation des gains via les frais</h2>
-    <p><a href="/operateur">Retour a l'espace operateur</a></p>
-
-    <form action="/gains" method="get">
-        <label for="date_debut">Du :</label>
-        <input type="date" name="date_debut" id="date_debut" value="<?= $date_debut ?>">
-        <label for="date_fin">Au :</label>
-        <input type="date" name="date_fin" id="date_fin" value="<?= $date_fin ?>">
-        <button type="submit">Filtrer</button>
-    </form>
-
-    <h3>Repartition des frais</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Type d'operation</th>
-            <th>Nombre d'operations</th>
-            <th>Frais conserves par l'operateur source</th>
-            <th>Commissions pour les autres operateurs</th>
-        </tr>
-        <?php $totalFraisOperateur = 0; ?>
-        <?php $totalCommissions = 0; ?>
-        <?php foreach ($gains as $gain) : ?>
-            <tr>
-                <td><?= esc($gain['type_libelle']) ?></td>
-                <td><?= $gain['nb_operations'] ?></td>
-                <td><?= number_format((float) $gain['total_frais_operateur'], 2) ?> Ar</td>
-                <td><?= number_format((float) $gain['total_commissions'], 2) ?> Ar</td>
-            </tr>
-            <?php $totalFraisOperateur += (float) $gain['total_frais_operateur']; ?>
-            <?php $totalCommissions += (float) $gain['total_commissions']; ?>
-        <?php endforeach; ?>
-        <tr>
-            <th colspan="2">Total general</th>
-            <th><?= number_format($totalFraisOperateur, 2) ?> Ar</th>
-            <th><?= number_format($totalCommissions, 2) ?> Ar</th>
-        </tr>
-    </table>
-
-    <h3>Commissions a verser aux autres operateurs</h3>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>Operateur destinataire</th>
-            <th>Nombre de transferts</th>
-            <th>Commission a verser</th>
-        </tr>
-        <?php if (empty($commissions)) : ?>
-            <tr><td colspan="3">Aucune commission sur cette periode.</td></tr>
-        <?php else : ?>
-            <?php foreach ($commissions as $commission) : ?>
-                <tr>
-                    <td><?= esc($commission['operateur_nom']) ?></td>
-                    <td><?= $commission['nb_transferts'] ?></td>
-                    <td><?= number_format((float) $commission['total_commission'], 2) ?> Ar</td>
-                </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </table>
-</body>
-</html>
+<?= $this->include('operateur/partials/header', ['title' => 'Situation gains']) ?>
+<div class="mb-4"><h1 class="h3 mb-1">Situation des gains</h1><p class="text-muted mb-0">Frais conserves et commissions par periode.</p></div>
+<form action="<?= site_url('gains') ?>" method="get" class="card shadow-sm mb-4"><div class="card-body"><div class="row g-3 align-items-end"><div class="col-sm-4"><label for="date_debut" class="form-label">Du</label><input type="date" name="date_debut" id="date_debut" value="<?= esc($date_debut) ?>" class="form-control"></div><div class="col-sm-4"><label for="date_fin" class="form-label">Au</label><input type="date" name="date_fin" id="date_fin" value="<?= esc($date_fin) ?>" class="form-control"></div><div class="col-sm-4"><button type="submit" class="btn btn-primary">Filtrer</button></div></div></div></form>
+<?php $totalFraisOperateur = 0; $totalCommissions = 0; ?>
+<div class="card shadow-sm mb-4"><div class="card-header bg-white"><h2 class="h5 mb-0">Repartition des frais</h2></div><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead class="table-light"><tr><th>Type d'operation</th><th class="text-end">Operations</th><th class="text-end">Frais operateur source</th><th class="text-end">Commissions autres operateurs</th></tr></thead><tbody><?php foreach ($gains as $gain) : ?><?php $totalFraisOperateur += (float) $gain['total_frais_operateur']; $totalCommissions += (float) $gain['total_commissions']; ?><tr><td><?= esc($gain['type_libelle']) ?></td><td class="text-end"><?= $gain['nb_operations'] ?></td><td class="text-end"><?= number_format((float) $gain['total_frais_operateur'], 2, ',', ' ') ?> Ar</td><td class="text-end"><?= number_format((float) $gain['total_commissions'], 2, ',', ' ') ?> Ar</td></tr><?php endforeach; ?></tbody><tfoot class="table-light"><tr><th colspan="2">Total</th><th class="text-end"><?= number_format($totalFraisOperateur, 2, ',', ' ') ?> Ar</th><th class="text-end"><?= number_format($totalCommissions, 2, ',', ' ') ?> Ar</th></tr></tfoot></table></div></div>
+<div class="card shadow-sm"><div class="card-header bg-white"><h2 class="h5 mb-0">Commissions a verser aux autres operateurs</h2></div><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead class="table-light"><tr><th>Operateur destinataire</th><th class="text-end">Transferts</th><th class="text-end">Commission</th></tr></thead><tbody><?php foreach ($commissions as $commission) : ?><tr><td><?= esc($commission['operateur_nom']) ?></td><td class="text-end"><?= $commission['nb_transferts'] ?></td><td class="text-end"><?= number_format((float) $commission['total_commission'], 2, ',', ' ') ?> Ar</td></tr><?php endforeach; ?><?php if (empty($commissions)) : ?><tr><td colspan="3" class="text-center text-muted py-4">Aucune commission sur cette periode.</td></tr><?php endif; ?></tbody></table></div></div>
+<?= $this->include('operateur/partials/footer') ?>

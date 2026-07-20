@@ -14,6 +14,7 @@
             <div class="text-white d-flex align-items-center gap-2">
                 <span><?= esc(session('client_numero')) ?></span>
                 <a href="<?= site_url('client/logout') ?>" class="btn btn-sm btn-outline-light">Déconnexion</a>
+                <a href="<?= site_url('/') ?>" class="btn btn-sm btn-outline-light">ACCUEIL</a>
             </div>
         <?php endif; ?>
     </div>

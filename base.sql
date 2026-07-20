@@ -53,6 +53,7 @@ CREATE TABLE transactions (
     montant DECIMAL(15,2) NOT NULL,
     frais DECIMAL(15,2) NOT NULL,
     commission_interoperateur DECIMAL(15,2) NOT NULL DEFAULT 0,
+    frais_retrait_inclus DECIMAL(15,2) NOT NULL DEFAULT 0,
     date_operation DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (type_operation_id) REFERENCES types_operation(id),
     FOREIGN KEY (client_source_id) REFERENCES clients(id),

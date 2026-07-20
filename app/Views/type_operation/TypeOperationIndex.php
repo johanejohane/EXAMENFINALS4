@@ -1,32 +1,4 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <title>Types d'opération</title>
-</head>
-<body>
-    <h2>Liste des types d'opération</h2>
-    <a href="/types-operation/new">ajouter</a>
-    <table border="1" cellpadding="5">
-        <tr>
-            <th>ID</th>
-            <th>Code</th>
-            <th>Libellé</th>
-            <th>Actions</th>
-        </tr>
-        <?php foreach ($types as $t) : ?>
-            <tr>
-                <td><?= $t['id'] ?></td>
-                <td><?= $t['code'] ?></td>
-                <td><?= $t['libelle'] ?></td>
-                <td>
-                    <a href="/types-operation/<?= $t['id'] ?>/edit">Modifier</a>
-                    <form action="/types-operation/<?= $t['id'] ?>/delete" method="post" style="display:inline;">
-                        <button type="submit">Supprimer</button>
-                    </form>
-                </td>
-            </tr>
-        <?php endforeach; ?>
-    </table>
-</body>
-</html>
+<?= $this->include('operateur/partials/header', ['title' => 'Types operation']) ?>
+<div class="d-flex justify-content-between align-items-center mb-4"><h1 class="h3 mb-0">Types d'operation</h1><a href="<?= site_url('types-operation/new') ?>" class="btn btn-primary">Ajouter un type</a></div>
+<div class="card shadow-sm"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead class="table-light"><tr><th>Code</th><th>Libelle</th><th class="text-end">Actions</th></tr></thead><tbody><?php foreach ($types as $type) : ?><tr><td><code><?= esc($type['code']) ?></code></td><td><?= esc($type['libelle']) ?></td><td class="text-end"><a href="<?= site_url('types-operation/' . $type['id'] . '/edit') ?>" class="btn btn-sm btn-outline-primary">Modifier</a><form action="<?= site_url('types-operation/' . $type['id'] . '/delete') ?>" method="post" class="d-inline"><?= csrf_field() ?><button type="submit" class="btn btn-sm btn-outline-danger">Supprimer</button></form></td></tr><?php endforeach; ?><?php if (empty($types)) : ?><tr><td colspan="3" class="text-center text-muted py-4">Aucun type d'operation.</td></tr><?php endif; ?></tbody></table></div></div>
+<?= $this->include('operateur/partials/footer') ?>
