@@ -30,3 +30,6 @@ $routes->post('baremes', 'BaremeFraisController::create');
 $routes->get('baremes/(:num)/edit', 'BaremeFraisController::edit/$1');
 $routes->post('baremes/(:num)', 'BaremeFraisController::update/$1');
 $routes->post('baremes/(:num)/delete', 'BaremeFraisController::delete/$1');
+
+// Situation des gains
+$routes->get('gains', 'GainController::index');
