@@ -33,3 +33,6 @@ $routes->post('baremes/(:num)/delete', 'BaremeFraisController::delete/$1');
 
 // Situation des gains
 $routes->get('gains', 'GainController::index');
+
+// Situation des comptes clients
+$routes->get('comptes', 'CompteClientController::index');
