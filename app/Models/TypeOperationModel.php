@@ -15,4 +15,5 @@ class TypeOperationModel extends Model
     {
         return $this->where('code', $code)->first();
     }
+  protected $returnType = 'array';
 }
