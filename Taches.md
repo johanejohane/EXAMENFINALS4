@@ -16,13 +16,27 @@
     - génération de donnée
 - crud
     - préfixe
-        - création routes $routes->resource('prefixe');
+        - création routes 
+            -$routes->get('prefixes', 'PrefixeController::index');
+            $routes->get('prefixes/new', 'PrefixeController::new');
+            $routes->post('prefixes', 'PrefixeController::create');
+            $routes->get('prefixes/(:num)/edit', 'PrefixeController::edit/$1');
+            $routes->post('prefixes/(:num)', 'PrefixeController::update/$1');
+            $routes->post('prefixes/(:num)/delete', 'PrefixeController::delete/$1');
 
 - model
     - prefixe
     
 - controller
-    - prefixe
+    - prefixeController 
+        - methodes
+            - new
+            - create
+            - edit
+            - update
+            - delete
 
 - views
-    - 
+    - Index
+    - Edit
+    - Create
