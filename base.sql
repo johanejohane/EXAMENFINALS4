@@ -42,5 +42,23 @@ CREATE TABLE transactions (
 );
 
 -- données de départ
-INSERT INTO prefixes (prefixe, libelle) VALUES ('033','Opérateur A'), ('037','Opérateur B');
+INSERT INTO prefixes (prefixe, libelle) VALUES ('033','Airtel'), ('037','Orange'), ('032','Yas');
 INSERT INTO types_operation (code, libelle) VALUES ('depot','Dépôt'), ('retrait','Retrait'), ('transfert','Transfert');
+
+-- RETRAIT (type_operation_id = 2)
+-- Sous 50 000 Ar : frais fixe de 500 Ar
+-- Au-dessus de 50 000 Ar : frais de 1% du montant
+INSERT INTO baremes_frais (type_operation_id, montant_min, montant_max, frais, frais_type)
+VALUES
+(2, 0,     50000, 500, 'fixe'),
+(2, 50001, NULL,  1,   'pourcentage');
+
+-- TRANSFERT (type_operation_id = 3)
+-- Frais fixe de 200 Ar quel que soit le montant
+INSERT INTO baremes_frais (type_operation_id, montant_min, montant_max, frais, frais_type)
+VALUES
+(3, 0, NULL, 200, 'fixe');
+
+INSERT INTO clients (numero, nom, solde) VALUES
+('0331234567', 'Test Rakoto', 100000),
+('0371234567', 'Test Rabe', 50000);
