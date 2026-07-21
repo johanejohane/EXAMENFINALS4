@@ -105,6 +105,8 @@ class OperationController extends BaseController
         $inclureFraisRetrait = $this->request->getPost('inclure_frais_retrait') === '1';
         $client = $this->clientModel->find(session('client_id'));
 
+
+
         if ($montantTotal <= 0) {
             return redirect()->back()->withInput()->with('error', 'Montant invalide.');
         }
@@ -159,13 +161,19 @@ class OperationController extends BaseController
                 return redirect()->back()->withInput()->with('error', "Operateur introuvable pour le numero {$numeroDestinataire}.");
             }
 
+            $memeOperateur = $operateurSource['id'] === $operateurDestination['id'];
+
+            if ($inclureFraisRetrait && ! $memeOperateur) {
+                return redirect()->back()->withInput()->with('error', "Le frais de retrait ne peut pas etre inclus pour le numero {$numeroDestinataire} : operateur different.");
+            }
+
             $fraisBareme = $this->baremeFraisModel->calculerFrais($typeTransfert['id'], $montant);
             $fraisRetraitInclus = $inclureFraisRetrait
                 ? $this->baremeFraisModel->calculerFrais($typeRetrait['id'], $montant)
                 : 0.0;
             $commission = 0.0;
 
-            if ($operateurSource['id'] != $operateurDestination['id']) {
+            if (! $memeOperateur) {
                 $commission = round($montant * ((float) $operateurDestination['commission_transfert'] / 100), 2);
             }
 

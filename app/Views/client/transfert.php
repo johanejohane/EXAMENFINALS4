@@ -21,6 +21,7 @@
                         <label class="form-label">Montant à transférer (Ar)</label>
                         <input type="number" step="0.01" min="1" name="montant" class="form-control" required>
                     </div>
+                    
                     <div class="form-check mb-3">
                         <input class="form-check-input" type="checkbox" name="inclure_frais_retrait" value="1" id="inclure_frais_retrait">
                         <label class="form-check-label" for="inclure_frais_retrait">
