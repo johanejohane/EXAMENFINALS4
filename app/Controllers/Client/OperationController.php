@@ -161,8 +161,14 @@ class OperationController extends BaseController
                 return redirect()->back()->withInput()->with('error', "Operateur introuvable pour le numero {$numeroDestinataire}.");
             }
 
+
+
             $memeOperateur = $operateurSource['id'] === $operateurDestination['id'];
 
+            if ($nombreDestinataires > 1 && ! $memeOperateur) {
+                return redirect()->back()->withInput()->with('error', "L'envoi multiple n'est disponible que vers des numeros de votre propre operateur. Le numero {$numeroDestinataire} appartient a un autre operateur.");
+            }
+            
             if ($inclureFraisRetrait && ! $memeOperateur) {
                 return redirect()->back()->withInput()->with('error', "Le frais de retrait ne peut pas etre inclus pour le numero {$numeroDestinataire} : operateur different.");
             }
