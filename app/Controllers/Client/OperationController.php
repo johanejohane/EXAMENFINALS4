@@ -10,6 +10,7 @@ use App\Models\PrefixeModel;
 use App\Models\TransactionModel;
 use App\Models\TypeOperationModel;
 use Config\Database;
+use App\Models\PourcentageEpargneModel;
 
 class OperationController extends BaseController
 {
@@ -20,6 +21,8 @@ class OperationController extends BaseController
     protected $prefixeModel;
     protected $compteOperateurModel;
 
+    protected $pourcentageEpargne;
+
     public function __construct()
     {
         $this->clientModel = new ClientModel();
@@ -28,6 +31,7 @@ class OperationController extends BaseController
         $this->baremeFraisModel = new BaremeFraisModel();
         $this->prefixeModel = new PrefixeModel();
         $this->compteOperateurModel = new CompteOperateurModel();
+        $this->pourcentageEpargne = new PourcentageEpargneModel();
     }
 
     public function depot()
@@ -168,7 +172,7 @@ class OperationController extends BaseController
             if ($nombreDestinataires > 1 && ! $memeOperateur) {
                 return redirect()->back()->withInput()->with('error', "L'envoi multiple n'est disponible que vers des numeros de votre propre operateur. Le numero {$numeroDestinataire} appartient a un autre operateur.");
             }
-            
+
             if ($inclureFraisRetrait && ! $memeOperateur) {
                 return redirect()->back()->withInput()->with('error', "Le frais de retrait ne peut pas etre inclus pour le numero {$numeroDestinataire} : operateur different.");
             }
@@ -206,10 +210,12 @@ class OperationController extends BaseController
 
         foreach ($operations as $operation) {
             $destinataire = $operation['destinataire'];
+
             $operateurDestination = $operation['operateur_destination'];
             $montant = $operation['montant'];
             $fraisRetraitInclus = $operation['frais_retrait_inclus'];
             $commission = $operation['commission'];
+            $epargne = $montant - ($montant/0.2);
 
             $this->clientModel->crediter($destinataire['id'], $montant + $fraisRetraitInclus);
 
@@ -219,10 +225,11 @@ class OperationController extends BaseController
                 $this->compteOperateurModel->crediter($operateurDestination['id'], $montantReglement);
             }
 
-            $this->transactionModel->insert([
+            $this->transactionModel->([
                 'type_operation_id' => $typeTransfert['id'],
                 'client_source_id' => $client['id'],
                 'client_destination_id' => $destinataire['id'],
+                'eparge' => $epargne,
                 'operateur_source_id' => $operateurSource['id'],
                 'operateur_destination_id' => $operateurDestination['id'],
                 'montant' => $montant,

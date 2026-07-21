@@ -51,6 +51,7 @@ CREATE TABLE transactions (
     operateur_source_id INTEGER,
     operateur_destination_id INTEGER,
     montant DECIMAL(15,2) NOT NULL,
+    eparge DECIMAL(15,2) NOT NULL,
     frais DECIMAL(15,2) NOT NULL,
     commission_interoperateur DECIMAL(15,2) NOT NULL DEFAULT 0,
     frais_retrait_inclus DECIMAL(15,2) NOT NULL DEFAULT 0,
@@ -61,6 +62,17 @@ CREATE TABLE transactions (
     FOREIGN KEY (operateur_source_id) REFERENCES operateurs(id),
     FOREIGN KEY (operateur_destination_id) REFERENCES operateurs(id)
 );
+
+CREATE Table pourcentage_epargne (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    id_client INTEGER NOT NULL,
+    pourcentage DECIMAL(15,2) NOT NULL,
+    FOREIGN KEY (id_client) REFERENCES clients(id)
+)
+
+INSERT INTO pourcentage_epargne (id_client, pourcentage) VALUES
+(0, 0.2);
+
 
 -- données de départ
 INSERT INTO operateurs (nom, commission_transfert) VALUES

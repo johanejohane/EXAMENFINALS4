@@ -79,3 +79,7 @@ $routes->get('gains', 'GainController::index');
 $routes->get('comptes', 'CompteClientController::index');
 
 $routes->get('reglements-operateurs', 'CompteOperateurController::index');
+
+$routes->get('epargne','client\PourcentageEpargneController::index');
+$routes->get('epargne/new','client\PourcentageEpargneController::crate');
+$routes->get('epargne/(:num/edit','client\PourcentageEpargneController::edit/$1');
